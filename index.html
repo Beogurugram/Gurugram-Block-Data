@@ -1113,11 +1113,6 @@ function renderDash(){
     <div class="stat-card stat-yellow"><div class="stat-label">Clusters Complete</div><div class="stat-value">${cfg.clusters.filter(c=>(cfg.schools[c]||[]).every(s=>submissions[typeof s==='object'?s.name:s])).length}</div><div class="stat-sub">of ${cfg.clusters.length}</div></div>`;
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('prog-label').textContent=`${done} / ${total}`;
-  document.getElementById('cluster-grid').innerHTML=cfg.clusters.map(c=>{
-    const sc=cfg.schools[c]||[],dc=sc.filter(s=>submissions[typeof s==='object'?s.name:s]).length;
-    const p=sc.length?Math.round(dc/sc.length*100):0,allDone=dc===sc.length&&sc.length>0;
-    return `<div class="chip${allDone?' done':''}" onclick="filterByCluster('${esc(c)}')" title="${c}"><div class="chip-name">${c}</div><div class="chip-prog">${dc}/${sc.length}</div><div class="chip-bar"><div class="chip-fill" style="width:${p}%"></div></div></div>`;
-  }).join('');
 }
 function filterByCluster(c){ document.getElementById('f-cluster').value=c; dashCluster=c; renderTable(); document.getElementById('school-table').scrollIntoView({behavior:'smooth'}); }
 function setClusterFilter(v){ dashCluster=v; renderTable(); }
