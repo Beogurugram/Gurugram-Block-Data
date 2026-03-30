@@ -303,12 +303,12 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
 
 <!-- NAV -->
 <div class="nav" id="main-nav">
-  <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
-  <button class="nav-tab" onclick="showTab('submit')">Submit Report</button>
+  <button class="nav-tab active" onclick="showTab('submit')">Submit Report</button>
+  <button class="nav-tab" onclick="showTab('dashboard')">Dashboard</button>
 </div>
 
 <!-- DASHBOARD -->
-<div id="tab-dashboard" class="main">
+<div id="tab-dashboard" class="main" style="display:none">
   <div class="stats-grid" id="stat-cards">
     <div class="stat-card"><div class="stat-label">Total Schools</div><div class="stat-value" style="font-size:20px"><div class="spinner"></div></div></div>
     <div class="stat-card stat-green"><div class="stat-label">Submitted</div><div class="stat-value" style="color:var(--muted);font-size:20px">—</div></div>
@@ -321,8 +321,6 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
       <span id="prog-label" style="font-size:13px;color:var(--muted);font-family:'DM Mono',monospace"></span>
     </div>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    <div style="font-size:11px;color:var(--muted);margin-top:8px">Cluster-wise — click to filter</div>
-    <div class="cluster-grid" id="cluster-grid"></div>
   </div>
   <div class="filter-bar">
     <button class="fbtn active" id="f-all" onclick="setFilter('all')">All</button>
@@ -352,7 +350,7 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
 </div>
 
 <!-- SUBMIT FORM -->
-<div id="tab-submit" class="main" style="display:none">
+<div id="tab-submit" class="main">
   <div class="form-wrap">
     <div class="card card-pad">
       <div class="form-title" id="form-heading">Quarterly School Safety Report</div>
@@ -444,6 +442,7 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
       <div class="cg-row"><div><div class="cg-what">Portal title, subtitle, deadline date, logo</div><div class="cg-desc">Header and dashboard text</div></div><div class="cg-where">Portal Branding</div></div>
       <div class="cg-row"><div><div class="cg-what">Form title, instructions, submit button</div><div class="cg-desc">Text on the submission form page</div></div><div class="cg-where">Form Text</div></div>
       <div class="cg-row"><div><div class="cg-what">Admin PIN (your password)</div><div class="cg-desc">Default is 1234 — change immediately</div></div><div class="cg-where">Admin PIN</div></div>
+      <div class="cg-row"><div><div class="cg-what">Hide Primary / Sr.Sec / High / Middle schools</div><div class="cg-desc">Toggle whole categories on or off from the portal</div></div><div class="cg-where">Enable / Disable Categories</div></div>
       <div class="cg-row"><div><div class="cg-what">Google Sheets Web App URL</div><div class="cg-desc">Connect or reconnect the portal to Google Sheets</div></div><div class="cg-where">Google Sheets Setup</div></div>
     </div>
   </div>
@@ -456,6 +455,7 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
       <button class="mnav-item" onclick="showMS('branding',this)"><span style="font-size:15px">🎨</span> Portal Branding</button>
       <div class="mnav-sep">Structure</div>
       <button class="mnav-item" onclick="showMS('clusters',this)"><span style="font-size:15px">🏫</span> Clusters &amp; Schools</button>
+      <button class="mnav-item" onclick="showMS('catfilter',this)"><span style="font-size:15px">🔘</span> Enable / Disable Categories</button>
       <button class="mnav-item" onclick="showMS('activities',this)"><span style="font-size:15px">📋</span> Activity Columns</button>
       <button class="mnav-item" onclick="showMS('rowlabels',this)"><span style="font-size:15px">📊</span> Row Labels</button>
       <div class="mnav-sep">Form</div>
@@ -547,6 +547,18 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
         </div>
         <div style="margin-top:10px;font-size:12px;color:var(--yellow);background:var(--yellow-bg);padding:9px 13px;border-radius:var(--radius)">
           After clicking Save All Changes, the updated school/cluster list is live for all users immediately.
+        </div>
+      </div>
+
+      <!-- CATEGORY FILTER -->
+      <div class="mp-section" id="ms-catfilter">
+        <div class="mp-title">Enable / Disable School Categories</div>
+        <div class="mp-sub">Toggle which categories of schools appear in the submission form and dashboard. Disabled categories are hidden from schools completely. Use this when you only need data from specific school types.</div>
+        <div style="display:grid;gap:10px;margin-bottom:18px" id="cat-toggle-list">
+          <!-- rendered by JS -->
+        </div>
+        <div style="padding:11px 14px;background:var(--yellow-bg);border-radius:var(--radius);font-size:12px;color:var(--yellow);line-height:1.6">
+          <strong>Example:</strong> Disable "Sr. Sec." and "High" → only Primary and Middle schools appear in the form. Schools from disabled categories cannot submit. Click <strong>Save All Changes</strong> to apply.
         </div>
       </div>
 
@@ -713,7 +725,8 @@ function buildDefaultCfg(){
       {id:'desig',label:'Designation',type:'text',required:false},
       {id:'phone',label:'Phone Number',type:'tel',required:true},
       {id:'link',label:'Upload Link (Drive/OneDrive)',type:'url',required:true},
-    ]
+    ],
+    disabledCategories:[]
   };
 }
 
@@ -898,12 +911,13 @@ function populateSchools(){
   const c=document.getElementById('f-sel-cluster').value;
   const sel=document.getElementById('f-sel-school');
   sel.innerHTML='<option value="">— Select School —</option>';
+  const disabled=cfg.disabledCategories||[];
   if(c && cfg.schools[c]){
-    // Group by category
     const byCat = {};
     cfg.schools[c].forEach(s=>{
       const sch = typeof s==='object'?s:{name:s,category:''};
       const cat = sch.category||'Other';
+      if(disabled.includes(cat)) return;
       if(!byCat[cat]) byCat[cat]=[];
       byCat[cat].push(sch);
     });
@@ -1033,18 +1047,61 @@ function showTab(t){
   document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el=>{ if(el.onclick&&el.onclick.toString().includes("'"+t+"'")) el.classList.add('active'); });
   if(t==='dashboard'){renderDash();renderTable();}
+  if(t==='submit') rebuildDropdowns();
   if(t==='responses') renderResponses();
-  if(t==='master'){syncInputs();renderMasterClusters();renderMasterActivities();renderMasterRows();renderMasterCF();}
+  if(t==='master'){syncInputs();renderMasterClusters();renderMasterActivities();renderMasterRows();renderMasterCF();renderCatToggles();}
 }
 
 // ════════════════════════════════════════════════════════════════
 // DASHBOARD
 // ════════════════════════════════════════════════════════════════
 function allSchools(){
+  const disabled = cfg.disabledCategories||[];
   return cfg.clusters.flatMap(c=>(cfg.schools[c]||[]).map(s=>{
     const sch=typeof s==='object'?s:{name:s,category:''};
     return {school:sch.name,cluster:c,category:sch.category||''};
+  })).filter(x=>!disabled.includes(x.category));
+}
+
+function renderCatToggles(){
+  const wrap=document.getElementById('cat-toggle-list'); if(!wrap) return;
+  const cats=['Sr. Sec.','High','Middle','Primary'];
+  const disabled=cfg.disabledCategories||[];
+  const labels={'Sr. Sec.':'Sr. Secondary (GSSS / GGSSS)','High':'High School (GHS)','Middle':'Middle School (GMS)','Primary':'Primary School (GPS / GMSPS)'};
+  const counts={'Sr. Sec.':0,'High':0,'Middle':0,'Primary':0};
+  cfg.clusters.forEach(c=>(cfg.schools[c]||[]).forEach(s=>{
+    const cat=typeof s==='object'?s.category:''
+    if(counts[cat]!==undefined) counts[cat]++;
   }));
+  wrap.innerHTML=cats.map(cat=>{
+    const st=CAT_STYLE[cat]||{bg:'#f1f5f9',color:'#64748b'};
+    const isOn=!disabled.includes(cat);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--white);border:1px solid ${isOn?'var(--border)':'#fca5a5'};border-radius:var(--radius);transition:all .2s">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:12px;height:12px;border-radius:50%;background:${st.color};flex-shrink:0"></div>
+        <div>
+          <div style="font-size:13px;font-weight:500">${labels[cat]}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${counts[cat]} schools across all clusters</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px;font-weight:500;color:${isOn?'var(--green)':'var(--red)'}">${isOn?'Enabled':'Disabled'}</span>
+        <div onclick="toggleCategory('${cat}')" style="width:44px;height:24px;border-radius:12px;background:${isOn?'var(--green)':'#e2e8f0'};cursor:pointer;position:relative;transition:background .2s;flex-shrink:0">
+          <div style="position:absolute;top:2px;${isOn?'right:2px':'left:2px'};width:20px;height:20px;border-radius:50%;background:#fff;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCategory(cat){
+  if(!cfg.disabledCategories) cfg.disabledCategories=[];
+  const idx=cfg.disabledCategories.indexOf(cat);
+  if(idx>-1) cfg.disabledCategories.splice(idx,1);
+  else cfg.disabledCategories.push(cat);
+  renderCatToggles();
+  renderDash(); renderTable();
+  populateSchools();
 }
 function renderDash(){
   const all=allSchools(),total=all.length;
