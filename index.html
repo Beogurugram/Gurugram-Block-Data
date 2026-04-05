@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gurugram Block Data Portal – BEO Gurugram</title>
+<title>School Safety QPR Portal – DEO Gurugram</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -349,43 +349,74 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
   </div>
 </div>
 
-<!-- SUBMIT FORM -->
+<!-- SUBMIT FORM — MULTI PAGE -->
 <div id="tab-submit" class="main">
   <div class="form-wrap">
     <div class="card card-pad">
       <div class="form-title" id="form-heading">Quarterly School Safety Report</div>
       <div class="form-sub" id="form-subheading">National DM Guidelines on School Safety Policy, 2016 · Select your school and fill all required fields.</div>
 
-      <div class="fsec">School Identification</div>
-      <div class="frow frow2">
-        <div class="fgroup">
-          <label>Cluster <span>*</span></label>
-          <select id="f-sel-cluster" onchange="populateSchools()"><option value="">— Select Cluster —</option></select>
+      <!-- STEP INDICATOR -->
+      <div style="display:flex;align-items:center;margin:16px 0 22px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="step-dot-1" style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;transition:all .3s">1</div>
+          <div id="step-lbl-1" style="font-size:12px;font-weight:500;color:var(--navy)">School &amp; Contact</div>
         </div>
-        <div class="fgroup">
-          <label>School <span>*</span></label>
-          <select id="f-sel-school" onchange="onSchoolSelect()"><option value="">— Select School —</option></select>
+        <div style="flex:1;height:2px;background:var(--border);margin:0 12px;border-radius:1px;overflow:hidden">
+          <div id="step-line" style="height:100%;width:0%;background:var(--navy);transition:width .4s ease"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="step-lbl-2" style="font-size:12px;font-weight:500;color:var(--light);transition:color .3s">Activity Data</div>
+          <div id="step-dot-2" style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;transition:all .3s">2</div>
         </div>
       </div>
-      <div id="school-cat-display" style="display:none;margin-top:-6px;margin-bottom:10px">
-        <span style="font-size:12px;color:var(--muted)">Category: </span>
-        <span class="cat-badge" id="cat-badge-val"></span>
+
+      <!-- PAGE 1 -->
+      <div id="form-page-1">
+        <div class="fsec">School Identification</div>
+        <div class="frow frow2">
+          <div class="fgroup">
+            <label>Cluster <span>*</span></label>
+            <select id="f-sel-cluster" onchange="populateSchools()"><option value="">— Select Cluster —</option></select>
+          </div>
+          <div class="fgroup">
+            <label>School <span>*</span></label>
+            <select id="f-sel-school" onchange="onSchoolSelect()"><option value="">— Select School —</option></select>
+          </div>
+        </div>
+        <div id="school-cat-display" style="display:none;margin-top:-6px;margin-bottom:10px">
+          <span style="font-size:12px;color:var(--muted)">Category: </span>
+          <span class="cat-badge" id="cat-badge-val"></span>
+        </div>
+        <div class="fsec">Contact Information</div>
+        <div id="contact-fields"></div>
+        <div id="extra-fields" style="margin-top:13px"></div>
+        <div class="err-msg" id="form-error"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
+          <button class="btn-ghost" onclick="resetForm()">Clear</button>
+          <button class="btn-primary" onclick="goToPage2()" style="gap:8px">
+            Next — Activity Data
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
       </div>
 
-      <div class="fsec">Contact Information</div>
-      <div id="contact-fields"></div>
-      <div id="extra-fields" style="margin-top:13px"></div>
-
-      <div class="fsec" id="grid-section-title">Safety Activity Data</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px" id="grid-hint">Enter counts for each activity across rows.</div>
-      <div class="dgrid-wrap"><table class="dgrid" id="data-grid"></table></div>
-
-      <div class="err-msg" id="form-error"></div>
-      <div class="suc-msg" id="form-success"></div>
-      <div class="form-actions">
-        <button class="btn-ghost" onclick="resetForm()">Clear</button>
-        <button class="btn-primary" onclick="submitForm()" id="submit-btn">Submit Report</button>
+      <!-- PAGE 2 -->
+      <div id="form-page-2" style="display:none">
+        <div class="fsec" id="grid-section-title">Safety Activity Data</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px" id="grid-hint">Enter counts for each activity across rows.</div>
+        <div class="dgrid-wrap"><table class="dgrid" id="data-grid"></table></div>
+        <div class="err-msg" id="form-error-2"></div>
+        <div class="suc-msg" id="form-success"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
+          <button class="btn-ghost" onclick="goToPage1()" style="display:flex;align-items:center;gap:6px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button class="btn-primary" onclick="submitForm()" id="submit-btn">Submit Report</button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -430,23 +461,6 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
     </div>
     <button class="save-bar-btn" onclick="saveConfig()" id="save-cfg-btn">💾 Save All Changes</button>
   </div>
-
-  <div class="card card-pad" style="margin-bottom:18px">
-    <div style="font-weight:600;font-size:14px;margin-bottom:4px">Quick Reference — Where to Change What</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">All changes go to Google Sheets. Schools see updates without any re-upload to GitHub.</div>
-    <div class="change-guide">
-      <div class="cg-row"><div><div class="cg-what">School names, cluster names, add/remove schools</div><div class="cg-desc">Edit the real school names from the uploaded list</div></div><div class="cg-where">Clusters &amp; Schools</div></div>
-      <div class="cg-row"><div><div class="cg-what">Activity column names in submission form</div><div class="cg-desc">The 10 column headers schools fill data against</div></div><div class="cg-where">Activity Columns</div></div>
-      <div class="cg-row"><div><div class="cg-what">Row labels (Done, Pending, Total etc.)</div><div class="cg-desc">The 4 rows in the data grid</div></div><div class="cg-where">Row Labels</div></div>
-      <div class="cg-row"><div><div class="cg-what">Contact fields (Name, Phone, Designation etc.)</div><div class="cg-desc">Fields schools fill before the data grid</div></div><div class="cg-where">Form Fields</div></div>
-      <div class="cg-row"><div><div class="cg-what">Portal title, subtitle, deadline date, logo</div><div class="cg-desc">Header and dashboard text</div></div><div class="cg-where">Portal Branding</div></div>
-      <div class="cg-row"><div><div class="cg-what">Form title, instructions, submit button</div><div class="cg-desc">Text on the submission form page</div></div><div class="cg-where">Form Text</div></div>
-      <div class="cg-row"><div><div class="cg-what">Admin PIN (your password)</div><div class="cg-desc">Default is 1234 — change immediately</div></div><div class="cg-where">Admin PIN</div></div>
-      <div class="cg-row"><div><div class="cg-what">Hide Primary / Sr.Sec / High / Middle schools</div><div class="cg-desc">Toggle whole categories on or off from the portal</div></div><div class="cg-where">Enable / Disable Categories</div></div>
-      <div class="cg-row"><div><div class="cg-what">Google Sheets Web App URL</div><div class="cg-desc">Connect or reconnect the portal to Google Sheets</div></div><div class="cg-where">Google Sheets Setup</div></div>
-    </div>
-  </div>
-
   <div class="master-grid">
     <div class="master-nav">
       <div class="mnav-sep">Connection</div>
@@ -635,6 +649,7 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
                 <option value="email">Email</option><option value="number">Number</option>
                 <option value="url">URL / Link</option><option value="date">Date</option>
                 <option value="textarea">Textarea</option>
+                <option value="file">File Upload</option>
               </select>
             </div>
             <button class="btn-primary" style="height:36px;font-size:12px" onclick="addContactField()">+ Add</button>
@@ -1011,6 +1026,32 @@ function onSchoolSelect(){
 // ════════════════════════════════════════════════════════════════
 // FORM BUILD
 // ════════════════════════════════════════════════════════════════
+function fileAccept(f){
+  const map={image:'image/*',pdf:'application/pdf',doc:'.doc,.docx,.xls,.xlsx,.ppt,.pptx',
+    'image,pdf':'image/*,application/pdf','image,doc':'image/*,.doc,.docx,.xls,.xlsx,.ppt,.pptx',any:'*'};
+  return map[f.allowedTypes||'any']||'*';
+}
+function renderFileField(f){
+  const accept=fileAccept(f);
+  const maxFiles=f.maxFiles||1;
+  const maxMB=f.maxSizeMB||10;
+  return `<div class="fgroup" style="margin-top:4px">
+    <label>${esc(f.label)}${f.required?' <span>*</span>':''}</label>
+    <div style="border:2px dashed var(--border);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:border-color .2s" 
+         onclick="document.getElementById('cf_${f.id}').click()"
+         ondragover="event.preventDefault();this.style.borderColor='var(--sky)'"
+         ondragleave="this.style.borderColor='var(--border)'"
+         ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event,'${f.id}',${maxFiles},${maxMB},'${accept}')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" style="margin-bottom:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div style="font-size:13px;color:var(--muted)">Click to browse or drag & drop</div>
+      <div style="font-size:11px;color:var(--light);margin-top:3px">Max ${maxFiles} file${maxFiles>1?'s':''} · ${maxMB}MB each${f.allowedTypes&&f.allowedTypes!=='any'?' · '+f.allowedTypes:''}</div>
+    </div>
+    <input type="file" id="cf_${f.id}" accept="${accept}" ${maxFiles>1?'multiple':''} style="display:none" 
+           onchange="handleFileSelect(this,'${f.id}',${maxFiles},${maxMB})">
+    <div id="cf_${f.id}_preview" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div id="cf_${f.id}_progress" style="display:none;margin-top:6px;font-size:12px;color:var(--blue)"></div>
+  </div>`;
+}
 function buildFormContact(){
   const wrap=document.getElementById('contact-fields'),extra=document.getElementById('extra-fields');
   if(!wrap) return;
@@ -1022,14 +1063,112 @@ function buildFormContact(){
     h+=`<div class="frow frow2">`;
     for(let j=0;j<2&&i+j<cF.length;j++){
       const f=cF[i+j];
-      h+=`<div class="fgroup"><label>${f.label}${f.required?' <span>*</span>':''}</label>`;
-      h+=f.type==='textarea'?`<textarea id="cf_${f.id}" rows="2" placeholder="${f.label}"></textarea>`:`<input id="cf_${f.id}" type="${f.type}" placeholder="${f.label}">`;
-      h+=`</div>`;
+      if(f.type==='file'){ h+=renderFileField(f); }
+      else {
+        h+=`<div class="fgroup"><label>${esc(f.label)}${f.required?' <span>*</span>':''}</label>`;
+        h+=f.type==='textarea'?`<textarea id="cf_${f.id}" rows="2" placeholder="${esc(f.label)}"></textarea>`:`<input id="cf_${f.id}" type="${f.type}" placeholder="${esc(f.label)}">`;
+        h+=`</div>`;
+      }
     }
     h+=`</div>`;
   }
   wrap.innerHTML=h;
-  extra.innerHTML=eF.map(f=>`<div class="fgroup" style="margin-top:13px"><label>${f.label}${f.required?' <span>*</span>':''}</label>${f.type==='textarea'?`<textarea id="cf_${f.id}" rows="2"></textarea>`:`<input id="cf_${f.id}" type="${f.type}" placeholder="${f.label}">`}</div>`).join('');
+  extra.innerHTML=eF.map(f=>{
+    if(f.type==='file') return renderFileField(f);
+    return `<div class="fgroup" style="margin-top:13px"><label>${esc(f.label)}${f.required?' <span>*</span>':''}</label>${f.type==='textarea'?`<textarea id="cf_${f.id}" rows="2"></textarea>`:`<input id="cf_${f.id}" type="${f.type}" placeholder="${esc(f.label)}">`}</div>`;
+  }).join('');
+}
+
+// File upload state
+const uploadedFiles = {};
+
+function getFileTypeError(file, accept){
+  if(!accept||accept==='*') return null;
+  const types=accept.split(',').map(t=>t.trim());
+  const name=file.name.toLowerCase();
+  const mime=file.type;
+  for(const t of types){
+    if(t.startsWith('image/')&&mime.startsWith('image/')) return null;
+    if(t==='application/pdf'&&mime==='application/pdf') return null;
+    if(t.startsWith('.')&&name.endsWith(t)) return null;
+  }
+  return `"${file.name}" is not an allowed file type.`;
+}
+
+function handleFileSelect(input, fieldId, maxFiles, maxMB){
+  const files=Array.from(input.files);
+  processFiles(files, fieldId, maxFiles, maxMB, fileAccept(cfg.contactFields.find(f=>f.id===fieldId)||{}));
+  input.value='';
+}
+function handleFileDrop(event, fieldId, maxFiles, maxMB, accept){
+  const files=Array.from(event.dataTransfer.files);
+  processFiles(files, fieldId, maxFiles, maxMB, accept);
+}
+function processFiles(files, fieldId, maxFiles, maxMB, accept){
+  if(!uploadedFiles[fieldId]) uploadedFiles[fieldId]=[];
+  const existing=uploadedFiles[fieldId].length;
+  const errEl=document.getElementById('form-error');
+  for(const file of files){
+    if(uploadedFiles[fieldId].length>=maxFiles){
+      showErr(`Maximum ${maxFiles} file${maxFiles>1?'s':''} allowed for this field.`); break;
+    }
+    if(file.size>maxMB*1024*1024){
+      showErr(`"${file.name}" exceeds the ${maxMB}MB limit.`); continue;
+    }
+    const typeErr=getFileTypeError(file,accept);
+    if(typeErr){showErr(typeErr);continue;}
+    uploadedFiles[fieldId].push(file);
+  }
+  renderFilePreviews(fieldId);
+}
+function renderFilePreviews(fieldId){
+  const wrap=document.getElementById('cf_'+fieldId+'_preview'); if(!wrap) return;
+  const files=uploadedFiles[fieldId]||[];
+  wrap.innerHTML=files.map((f,i)=>{
+    const isImg=f.type.startsWith('image/');
+    const icon=isImg?'🖼':'📄';
+    const size=(f.size/1024/1024).toFixed(2);
+    return `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;max-width:200px">
+      <span style="font-size:16px">${icon}</span>
+      <div style="flex:1;min-width:0"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500">${esc(f.name)}</div><div style="color:var(--muted);font-size:10px">${size}MB</div></div>
+      <button onclick="removeFile('${fieldId}',${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px;line-height:1;padding:0">×</button>
+    </div>`;
+  }).join('');
+}
+function removeFile(fieldId, idx){
+  if(uploadedFiles[fieldId]) uploadedFiles[fieldId].splice(idx,1);
+  renderFilePreviews(fieldId);
+}
+
+// Convert file to base64 for upload
+async function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onload=()=>res(reader.result.split(',')[1]);
+    reader.onerror=rej;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Upload files to Google Drive via Apps Script
+async function uploadFilesToDrive(fieldId, label){
+  const files=uploadedFiles[fieldId]||[];
+  if(!files.length) return '';
+  const progEl=document.getElementById('cf_'+fieldId+'_progress');
+  if(progEl){progEl.style.display='block';progEl.textContent='Uploading files...';}
+  const links=[];
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    if(progEl) progEl.textContent=`Uploading ${i+1} of ${files.length}: ${file.name}`;
+    try{
+      const b64=await fileToBase64(file);
+      const res=await apiPost({action:'uploadFile',fileName:file.name,mimeType:file.type,data:b64,folder:label});
+      if(res.link) links.push(res.link);
+      else if(res.error) throw new Error(res.error);
+    }catch(e){ showErr('File upload failed: '+e.message); if(progEl) progEl.style.display='none'; return null; }
+  }
+  if(progEl) progEl.style.display='none';
+  return links.join(', ');
 }
 
 function buildDataGrid(){
@@ -1293,22 +1432,79 @@ function closeModal(){ document.getElementById('modal').style.display='none'; }
 // ════════════════════════════════════════════════════════════════
 // SUBMIT
 // ════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// MULTI-PAGE FORM NAVIGATION
+// ════════════════════════════════════════════════════════════════
+function goToPage2(){
+  // Validate page 1
+  const cluster=document.getElementById('f-sel-cluster').value;
+  const school=document.getElementById('f-sel-school').value;
+  const errEl=document.getElementById('form-error');
+  errEl.style.display='none';
+  if(!cluster){errEl.textContent='Please select a cluster.';errEl.style.display='block';return;}
+  if(!school){errEl.textContent='Please select a school.';errEl.style.display='block';return;}
+  // Validate contact fields
+  for(const f of cfg.contactFields){
+    if(f.type==='file'){
+      const files=uploadedFiles[f.id]||[];
+      if(f.required&&!files.length){errEl.textContent=`Please upload a file for "${f.label}".`;errEl.style.display='block';return;}
+      continue;
+    }
+    const el=document.getElementById('cf_'+f.id); if(!el) continue;
+    const val=el.value.trim();
+    if(f.required&&!val){errEl.textContent=`"${f.label}" is required.`;errEl.style.display='block';return;}
+    if(f.type==='tel'&&val&&!/^[0-9]{7,15}$/.test(val.replace(/\s/g,''))){errEl.textContent='Please enter a valid phone number.';errEl.style.display='block';return;}
+    if(f.type==='url'&&val&&!val.startsWith('http')){errEl.textContent='Upload link must start with http.';errEl.style.display='block';return;}
+  }
+  // Go to page 2
+  document.getElementById('form-page-1').style.display='none';
+  document.getElementById('form-page-2').style.display='block';
+  document.getElementById('step-dot-2').style.background='var(--navy)';
+  document.getElementById('step-dot-2').style.color='#fff';
+  document.getElementById('step-lbl-2').style.color='var(--navy)';
+  document.getElementById('step-line').style.width='100%';
+  window.scrollTo({top:document.getElementById('tab-submit').offsetTop-60,behavior:'smooth'});
+}
+function goToPage1(){
+  document.getElementById('form-page-2').style.display='none';
+  document.getElementById('form-page-1').style.display='block';
+  document.getElementById('step-dot-2').style.background='var(--border)';
+  document.getElementById('step-dot-2').style.color='var(--muted)';
+  document.getElementById('step-lbl-2').style.color='var(--light)';
+  document.getElementById('step-line').style.width='0%';
+  window.scrollTo({top:document.getElementById('tab-submit').offsetTop-60,behavior:'smooth'});
+}
+
 async function submitForm(){
   if(submitting) return;
   const cluster=document.getElementById('f-sel-cluster').value;
   const school=document.getElementById('f-sel-school').value;
-  const errEl=document.getElementById('form-error'),sucEl=document.getElementById('form-success');
-  errEl.style.display='none';sucEl.style.display='none';
-  if(!cluster){showErr('Please select a cluster.');return;}
-  if(!school){showErr('Please select a school.');return;}
+  const errEl=document.getElementById('form-error-2')||document.getElementById('form-error');
+  const sucEl=document.getElementById('form-success');
+  if(errEl) errEl.style.display='none';
+  if(sucEl) sucEl.style.display='none';
+  if(!cluster||!school){showErr('Please go back and select a cluster and school.');return;}
   const fields={};
   for(const f of cfg.contactFields){
+    if(f.type==='file'){
+      const files=uploadedFiles[f.id]||[];
+      if(f.required&&!files.length){showErr(`Please upload a file for "${f.label}".`);return;}
+      // will upload after other validation passes
+      continue;
+    }
     const el=document.getElementById('cf_'+f.id); if(!el) continue;
     const val=el.value.trim();
     if(f.required&&!val){showErr(`"${f.label}" is required.`);return;}
     if(f.type==='tel'&&val&&!/^[0-9]{7,15}$/.test(val.replace(/\s/g,''))){showErr('Please enter a valid phone number.');return;}
     if(f.type==='url'&&val&&!val.startsWith('http')){showErr('Upload link must start with http.');return;}
     fields[f.label]=val;
+  }
+  // Upload files to Drive
+  for(const f of cfg.contactFields){
+    if(f.type!=='file') continue;
+    const link=await uploadFilesToDrive(f.id,f.label);
+    if(link===null){submitting=false;btn.textContent=cfg.submitBtn;btn.disabled=false;return;}
+    fields[f.label]=link;
   }
   const gridData={};
   cfg.activities.forEach((a,ai)=>{
@@ -1327,20 +1523,35 @@ async function submitForm(){
   try{
     const res=await apiPost({action:'submit',school,cluster,fields,gridData,activities:cfg.activities,rowLabels:cfg.rowLabels,contactFieldLabels:cfg.contactFields.map(f=>f.label)});
     submissions[school]={cluster,fields,gridData,time:res.time||new Date().toLocaleString('en-IN')};
-    sucEl.textContent=`"${school}" submitted successfully!`; sucEl.style.display='block';
+    if(sucEl){sucEl.textContent=`"${school}" submitted successfully! You can now submit another school.`; sucEl.style.display='block';}
     toast('Submitted to Google Sheets!');
     resetForm();
-    setTimeout(()=>sucEl.style.display='none',4000);
+    setTimeout(()=>{if(sucEl)sucEl.style.display='none';},5000);
   }catch(e){ showErr('Submission failed: '+e.message); }
   finally{ submitting=false; btn.textContent=cfg.submitBtn; btn.disabled=false; }
 }
-function showErr(m){const el=document.getElementById('form-error');el.textContent=m;el.style.display='block';setTimeout(()=>el.style.display='none',4500);}
+function showErr(m){
+  const p2=document.getElementById('form-page-2');
+  const errId=(p2&&p2.style.display!=='none')?'form-error-2':'form-error';
+  const el=document.getElementById(errId); if(!el) return;
+  el.textContent=m;el.style.display='block';setTimeout(()=>el.style.display='none',4500);
+}
 function resetForm(){
   document.getElementById('f-sel-cluster').value='';
   document.getElementById('f-sel-school').innerHTML='<option value="">— Select School —</option>';
-  document.getElementById('school-cat-display').style.display='none';
-  cfg.contactFields.forEach(f=>{const el=document.getElementById('cf_'+f.id);if(el)el.value='';});
+  const scd=document.getElementById('school-cat-display'); if(scd) scd.style.display='none';
+  cfg.contactFields.forEach(f=>{
+    if(f.type==='file'){ uploadedFiles[f.id]=[]; renderFilePreviews(f.id); return; }
+    const el=document.getElementById('cf_'+f.id);if(el)el.value='';
+  });
   buildDataGrid();
+  // Return to page 1
+  const p1=document.getElementById('form-page-1'),p2=document.getElementById('form-page-2');
+  if(p1) p1.style.display='block';
+  if(p2) p2.style.display='none';
+  const sd2=document.getElementById('step-dot-2'); if(sd2){sd2.style.background='var(--border)';sd2.style.color='var(--muted)';}
+  const sl2=document.getElementById('step-lbl-2'); if(sl2) sl2.style.color='var(--light)';
+  const sline=document.getElementById('step-line'); if(sline) sline.style.width='0%';
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1502,25 +1713,62 @@ function removeRow(i){ cfg.rowLabels.splice(i,1);renderMasterRows();buildDataGri
 function renderMasterCF(){
   const wrap=document.getElementById('cf-editor'); if(!wrap) return;
   wrap.innerHTML='';
+  const ALL_TYPES=['text','tel','email','number','url','date','textarea','file'];
   cfg.contactFields.forEach((f,i)=>{
-    const row=document.createElement('div');row.className='cf-editor-row';
-    row.innerHTML=`<div class="field-num">${i+1}</div>
-      <div style="flex:1;display:grid;grid-template-columns:1fr 110px 60px;gap:8px;align-items:center">
-        <input value="${esc(f.label)}" onchange="cfg.contactFields[${i}].label=this.value;buildFormContact()" style="padding:5px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
-        <select onchange="cfg.contactFields[${i}].type=this.value;buildFormContact()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
-          ${['text','tel','email','number','url','date','textarea'].map(t=>`<option value="${t}"${f.type===t?' selected':''}>${t}</option>`).join('')}
-        </select>
-        <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);cursor:pointer;white-space:nowrap">
-          <input type="checkbox" ${f.required?'checked':''} onchange="cfg.contactFields[${i}].required=this.checked"> Req.
-        </label>
+    const isFile=f.type==='file';
+    const fileSettings=isFile?`
+      <div style="margin-top:8px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);display:grid;gap:8px">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:2px">File Upload Settings</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:3px">Max Files</div>
+            <input type="number" min="1" max="10" value="${f.maxFiles||1}" onchange="cfg.contactFields[${i}].maxFiles=parseInt(this.value)||1;buildFormContact()" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:3px">Max Size (MB)</div>
+            <input type="number" min="1" max="100" value="${f.maxSizeMB||10}" onchange="cfg.contactFields[${i}].maxSizeMB=parseInt(this.value)||10;buildFormContact()" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:3px">Allowed Types</div>
+            <select onchange="cfg.contactFields[${i}].allowedTypes=this.value;buildFormContact()" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+              <option value="any"${(f.allowedTypes||'any')==='any'?' selected':''}>Any File</option>
+              <option value="image"${f.allowedTypes==='image'?' selected':''}>Images Only</option>
+              <option value="pdf"${f.allowedTypes==='pdf'?' selected':''}>PDF Only</option>
+              <option value="doc"${f.allowedTypes==='doc'?' selected':''}>Word / Excel / PPT</option>
+              <option value="image,pdf"${f.allowedTypes==='image,pdf'?' selected':''}>Images + PDF</option>
+              <option value="image,doc"${f.allowedTypes==='image,doc'?' selected':''}>Images + Docs</option>
+            </select>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--light)">Files upload to Google Drive via Apps Script and the link is saved in your sheet.</div>
+      </div>`:''
+    const row=document.createElement('div');
+    row.className='cf-editor-row';
+    row.style.cssText='flex-direction:column;align-items:stretch;padding:10px 12px';
+    row.innerHTML=`
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="field-num">${i+1}</div>
+        <div style="flex:1;display:grid;grid-template-columns:1fr 120px 60px;gap:8px;align-items:center">
+          <input value="${esc(f.label)}" onchange="cfg.contactFields[${i}].label=this.value;buildFormContact()" style="padding:5px 9px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+          <select onchange="cfg.contactFields[${i}].type=this.value;renderMasterCF();buildFormContact()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+            ${ALL_TYPES.map(t=>`<option value="${t}"${f.type===t?' selected':''}>${t==='file'?'File Upload':t}</option>`).join('')}
+          </select>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);cursor:pointer;white-space:nowrap">
+            <input type="checkbox" ${f.required?'checked':''} onchange="cfg.contactFields[${i}].required=this.checked"> Req.
+          </label>
+        </div>
+        <button onclick="cfg.contactFields.splice(${i},1);renderMasterCF();buildFormContact()" class="ce-del">×</button>
       </div>
-      <button onclick="cfg.contactFields.splice(${i},1);renderMasterCF();buildFormContact()" class="ce-del">×</button>`;
+      ${fileSettings}`;
     wrap.appendChild(row);
   });
 }
 function addContactField(){
   const lbl=document.getElementById('nf-label').value.trim(); if(!lbl) return;
-  cfg.contactFields.push({id:'cf_'+Date.now(),label:lbl,type:document.getElementById('nf-type').value,required:false});
+  const typ=document.getElementById('nf-type').value;
+  const field={id:'cf_'+Date.now(),label:lbl,type:typ,required:false};
+  if(typ==='file'){field.maxFiles=1;field.maxSizeMB=10;field.allowedTypes='any';}
+  cfg.contactFields.push(field);
   document.getElementById('nf-label').value=''; renderMasterCF(); buildFormContact();
 }
 
