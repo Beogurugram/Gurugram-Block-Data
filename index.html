@@ -349,74 +349,37 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
   </div>
 </div>
 
-<!-- SUBMIT FORM — MULTI PAGE -->
+<!-- SUBMIT FORM — DYNAMIC SECTIONS -->
 <div id="tab-submit" class="main">
   <div class="form-wrap">
     <div class="card card-pad">
       <div class="form-title" id="form-heading">Quarterly School Safety Report</div>
-      <div class="form-sub" id="form-subheading">National DM Guidelines on School Safety Policy, 2016 · Select your school and fill all required fields.</div>
+      <div class="form-sub" id="form-subheading">National DM Guidelines on School Safety Policy, 2016</div>
 
-      <!-- STEP INDICATOR -->
-      <div style="display:flex;align-items:center;margin:16px 0 22px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div id="step-dot-1" style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;transition:all .3s">1</div>
-          <div id="step-lbl-1" style="font-size:12px;font-weight:500;color:var(--navy)">School &amp; Contact</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--border);margin:0 12px;border-radius:1px;overflow:hidden">
-          <div id="step-line" style="height:100%;width:0%;background:var(--navy);transition:width .4s ease"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div id="step-lbl-2" style="font-size:12px;font-weight:500;color:var(--light);transition:color .3s">Activity Data</div>
-          <div id="step-dot-2" style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;transition:all .3s">2</div>
-        </div>
-      </div>
+      <!-- STEP INDICATOR (rendered by JS) -->
+      <div id="form-steps" style="margin:16px 0 22px"></div>
 
-      <!-- PAGE 1 -->
-      <div id="form-page-1">
-        <div class="fsec">School Identification</div>
-        <div class="frow frow2">
-          <div class="fgroup">
-            <label>Cluster <span>*</span></label>
-            <select id="f-sel-cluster" onchange="populateSchools()"><option value="">— Select Cluster —</option></select>
-          </div>
-          <div class="fgroup">
-            <label>School <span>*</span></label>
-            <select id="f-sel-school" onchange="onSchoolSelect()"><option value="">— Select School —</option></select>
-          </div>
-        </div>
-        <div id="school-cat-display" style="display:none;margin-top:-6px;margin-bottom:10px">
-          <span style="font-size:12px;color:var(--muted)">Category: </span>
-          <span class="cat-badge" id="cat-badge-val"></span>
-        </div>
-        <div class="fsec">Contact Information</div>
-        <div id="contact-fields"></div>
-        <div id="extra-fields" style="margin-top:13px"></div>
-        <div class="err-msg" id="form-error"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
-          <button class="btn-ghost" onclick="resetForm()">Clear</button>
-          <button class="btn-primary" onclick="goToPage2()" style="gap:8px">
-            Next — Activity Data
+      <!-- SECTIONS RENDERED HERE -->
+      <div id="form-sections-wrap"></div>
+
+      <!-- NAV BUTTONS -->
+      <div id="form-nav" style="display:flex;justify-content:space-between;align-items:center;margin-top:22px">
+        <button class="btn-ghost" id="form-btn-back" onclick="formNavBack()" style="display:none;align-items:center;gap:6px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+        <button class="btn-ghost" onclick="resetForm()" id="form-btn-clear">Clear</button>
+        <div style="display:flex;gap:10px">
+          <button class="btn-primary" id="form-btn-next" onclick="formNavNext()" style="gap:8px">
+            Next
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
+          <button class="btn-primary" id="form-btn-submit" onclick="submitForm()" style="display:none">Submit Report</button>
         </div>
       </div>
 
-      <!-- PAGE 2 -->
-      <div id="form-page-2" style="display:none">
-        <div class="fsec" id="grid-section-title">Safety Activity Data</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px" id="grid-hint">Enter counts for each activity across rows.</div>
-        <div class="dgrid-wrap"><table class="dgrid" id="data-grid"></table></div>
-        <div class="err-msg" id="form-error-2"></div>
-        <div class="suc-msg" id="form-success"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
-          <button class="btn-ghost" onclick="goToPage1()" style="display:flex;align-items:center;gap:6px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Back
-          </button>
-          <button class="btn-primary" onclick="submitForm()" id="submit-btn">Submit Report</button>
-        </div>
-      </div>
-
+      <div class="err-msg" id="form-error" style="margin-top:12px"></div>
+      <div class="suc-msg" id="form-success" style="margin-top:12px"></div>
     </div>
   </div>
 </div>
@@ -473,7 +436,8 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
       <button class="mnav-item" onclick="showMS('activities',this)"><span style="font-size:15px">📋</span> Activity Columns</button>
       <button class="mnav-item" onclick="showMS('rowlabels',this)"><span style="font-size:15px">📊</span> Row Labels</button>
       <div class="mnav-sep">Form</div>
-      <button class="mnav-item" onclick="showMS('formfields',this)"><span style="font-size:15px">📝</span> Form Fields</button>
+      <button class="mnav-item" onclick="showMS('formbuilder',this)"><span style="font-size:15px">🧩</span> Form Builder</button>
+      <button class="mnav-item" onclick="showMS('formfields',this)"><span style="font-size:15px">📝</span> Form Fields (Legacy)</button>
       <button class="mnav-item" onclick="showMS('formtext',this)"><span style="font-size:15px">✏️</span> Form Text</button>
       <div class="mnav-sep">Security</div>
       <button class="mnav-item" onclick="showMS('pin',this)"><span style="font-size:15px">🔐</span> Admin PIN</button>
@@ -634,6 +598,20 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:'DM Mono',
         </div>
       </div>
 
+      <!-- FORM BUILDER -->
+      <div class="mp-section" id="ms-formbuilder">
+        <div class="mp-title">Form Builder</div>
+        <div class="mp-sub">Build your submission form like Google Forms. Add sections, add fields to each section, choose field types. Schools navigate between sections using Next / Back.</div>
+        <div id="fb-sections-list" style="display:flex;flex-direction:column;gap:14px;margin-bottom:16px"></div>
+        <button onclick="fbAddSection()" style="width:100%;padding:11px;border:2px dashed var(--border);border-radius:var(--radius-lg);background:none;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+          + Add New Section
+        </button>
+        <div style="margin-top:12px;padding:10px 14px;background:var(--yellow-bg);border-radius:var(--radius);font-size:12px;color:var(--yellow);line-height:1.6">
+          <strong>Field types:</strong> Text · Number · Phone · Email · Date · Yes/No · Dropdown · File Upload · Cluster Select · School Select · Data Grid (rows × columns)
+          <br><strong>After changes:</strong> Click Save All Changes to push to Google Sheets.
+        </div>
+      </div>
+
       <!-- FORM FIELDS -->
       <div class="mp-section" id="ms-formfields">
         <div class="mp-title">Contact Form Fields</div>
@@ -787,7 +765,47 @@ function buildDefaultCfg(){
       {id:'phone',label:'Phone Number',type:'tel',required:true},
       {id:'link',label:'Upload Link (Drive/OneDrive)',type:'url',required:true},
     ],
-    disabledCategories:[]
+    disabledCategories:[],
+    formSections:[
+      {
+        id:'sec_1', title:'School Information',
+        description:'Select your cluster and school, then fill in contact details.',
+        fields:[
+          {id:'fld_cluster',type:'cluster_select',label:'Select Cluster',required:true},
+          {id:'fld_school',type:'school_select',label:'Select School',required:true},
+          {id:'fld_name',type:'text',label:'Name of Submitting Person',required:true},
+          {id:'fld_desig',type:'text',label:'Designation',required:false},
+          {id:'fld_phone',type:'tel',label:'Phone Number',required:true},
+          {id:'fld_link',type:'url',label:'Upload Link (Google Drive / OneDrive)',required:false},
+        ]
+      },
+      {
+        id:'sec_2', title:'Safety Activity Data',
+        description:'Enter the count of schools for each activity.',
+        fields:[
+          {id:'fld_grid1',type:'datagrid',label:'Activity Data Grid',required:false,
+           columns:[
+             {label:'SDMP Finalized',type:'number'},
+             {label:'Safety Audit – Structural',type:'number'},
+             {label:'Safety Audit – Non-Structural',type:'number'},
+             {label:'Mock Drills Conducted',type:'number'},
+             {label:'Fire Extinguishers Installed',type:'number'},
+             {label:'Inflammable/Toxic Safety',type:'number'},
+             {label:'Building Bye-Laws Compliance',type:'number'},
+             {label:'RTE Recognition Certificate',type:'number'},
+             {label:'Regular Safety Training',type:'number'},
+             {label:'DM in Curriculum',type:'number'},
+           ],
+           rows:[
+             {label:'Done',type:'number'},
+             {label:'Yet to be Done',type:'number'},
+             {label:'Total Schools',type:'number'},
+             {label:'Remarks',type:'text'},
+           ]
+          }
+        ]
+      }
+    ]
   };
 }
 
@@ -1260,7 +1278,7 @@ function showTab(t){
   document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el=>{ if(el.onclick&&el.onclick.toString().includes("'"+t+"'")) el.classList.add('active'); });
   if(t==='dashboard'){renderDash();renderTable();}
-  if(t==='submit') rebuildDropdowns();
+  if(t==='submit'){currentSection=0;renderSubmitForm();}
   if(t==='responses') renderResponses();
   if(t==='master'){syncInputs();renderMasterClusters();renderMasterActivities();renderMasterRows();renderMasterCF();renderCatToggles();}
 }
@@ -1435,13 +1453,6 @@ function closeModal(){ document.getElementById('modal').style.display='none'; }
 // ════════════════════════════════════════════════════════════════
 // MULTI-PAGE FORM NAVIGATION
 // ════════════════════════════════════════════════════════════════
-function goToPage2(){
-  // Validate page 1
-  const cluster=document.getElementById('f-sel-cluster').value;
-  const school=document.getElementById('f-sel-school').value;
-  const errEl=document.getElementById('form-error');
-  errEl.style.display='none';
-  if(!cluster){errEl.textContent='Please select a cluster.';errEl.style.display='block';return;}
   if(!school){errEl.textContent='Please select a school.';errEl.style.display='block';return;}
   // Validate contact fields
   for(const f of cfg.contactFields){
@@ -1465,46 +1476,33 @@ function goToPage2(){
   document.getElementById('step-line').style.width='100%';
   window.scrollTo({top:document.getElementById('tab-submit').offsetTop-60,behavior:'smooth'});
 }
-function goToPage1(){
-  document.getElementById('form-page-2').style.display='none';
-  document.getElementById('form-page-1').style.display='block';
-  document.getElementById('step-dot-2').style.background='var(--border)';
-  document.getElementById('step-dot-2').style.color='var(--muted)';
-  document.getElementById('step-lbl-2').style.color='var(--light)';
-  document.getElementById('step-line').style.width='0%';
-  window.scrollTo({top:document.getElementById('tab-submit').offsetTop-60,behavior:'smooth'});
-}
 
 async function submitForm(){
   if(submitting) return;
-  const cluster=document.getElementById('f-sel-cluster').value;
-  const school=document.getElementById('f-sel-school').value;
-  const errEl=document.getElementById('form-error-2')||document.getElementById('form-error');
+  // Collect all data from all sections
+  const {school, cluster, fields, gridData} = collectFormData();
+  const errEl=document.getElementById('form-error');
   const sucEl=document.getElementById('form-success');
   if(errEl) errEl.style.display='none';
   if(sucEl) sucEl.style.display='none';
-  if(!cluster||!school){showErr('Please go back and select a cluster and school.');return;}
-  const fields={};
-  for(const f of cfg.contactFields){
-    if(f.type==='file'){
-      const files=uploadedFiles[f.id]||[];
-      if(f.required&&!files.length){showErr(`Please upload a file for "${f.label}".`);return;}
-      // will upload after other validation passes
-      continue;
-    }
-    const el=document.getElementById('cf_'+f.id); if(!el) continue;
+  if(!cluster){showErr('Please select a cluster.');return;}
+  if(!school){showErr('Please select a school.');return;}
+  // Validate last section fields
+  const lastSec=cfg.formSections[cfg.formSections.length-1]||{fields:[]};
+  for(const f of lastSec.fields){
+    if(f.type==='datagrid'||f.type==='file') continue;
+    const el=document.getElementById(f.id); if(!el) continue;
     const val=el.value.trim();
     if(f.required&&!val){showErr(`"${f.label}" is required.`);return;}
-    if(f.type==='tel'&&val&&!/^[0-9]{7,15}$/.test(val.replace(/\s/g,''))){showErr('Please enter a valid phone number.');return;}
-    if(f.type==='url'&&val&&!val.startsWith('http')){showErr('Upload link must start with http.');return;}
-    fields[f.label]=val;
   }
-  // Upload files to Drive
-  for(const f of cfg.contactFields){
-    if(f.type!=='file') continue;
-    const link=await uploadFilesToDrive(f.id,f.label);
-    if(link===null){submitting=false;btn.textContent=cfg.submitBtn;btn.disabled=false;return;}
-    fields[f.label]=link;
+  // Upload any file fields
+  for(const sec of (cfg.formSections||[])){
+    for(const f of sec.fields){
+      if(f.type!=='file') continue;
+      const link=await uploadFilesToDrive(f.id,f.label);
+      if(link===null){submitting=false;const btn2=document.getElementById('submit-btn');if(btn2){btn2.textContent=cfg.submitBtn;btn2.disabled=false;}return;}
+      fields[f.label]=link;
+    }
   }
   const gridData={};
   cfg.activities.forEach((a,ai)=>{
@@ -1523,7 +1521,7 @@ async function submitForm(){
   try{
     const res=await apiPost({action:'submit',school,cluster,fields,gridData,activities:cfg.activities,rowLabels:cfg.rowLabels,contactFieldLabels:cfg.contactFields.map(f=>f.label)});
     submissions[school]={cluster,fields,gridData,time:res.time||new Date().toLocaleString('en-IN')};
-    if(sucEl){sucEl.textContent=`"${school}" submitted successfully! You can now submit another school.`; sucEl.style.display='block';}
+    if(sucEl){sucEl.textContent=`"${school}" submitted successfully! You can now submit for another school.`; sucEl.style.display='block';}
     toast('Submitted to Google Sheets!');
     resetForm();
     setTimeout(()=>{if(sucEl)sucEl.style.display='none';},5000);
@@ -1531,27 +1529,17 @@ async function submitForm(){
   finally{ submitting=false; btn.textContent=cfg.submitBtn; btn.disabled=false; }
 }
 function showErr(m){
-  const p2=document.getElementById('form-page-2');
-  const errId=(p2&&p2.style.display!=='none')?'form-error-2':'form-error';
-  const el=document.getElementById(errId); if(!el) return;
+  const el=document.getElementById('form-error'); if(!el) return;
   el.textContent=m;el.style.display='block';setTimeout(()=>el.style.display='none',4500);
 }
 function resetForm(){
-  document.getElementById('f-sel-cluster').value='';
-  document.getElementById('f-sel-school').innerHTML='<option value="">— Select School —</option>';
-  const scd=document.getElementById('school-cat-display'); if(scd) scd.style.display='none';
-  cfg.contactFields.forEach(f=>{
-    if(f.type==='file'){ uploadedFiles[f.id]=[]; renderFilePreviews(f.id); return; }
-    const el=document.getElementById('cf_'+f.id);if(el)el.value='';
-  });
-  buildDataGrid();
-  // Return to page 1
-  const p1=document.getElementById('form-page-1'),p2=document.getElementById('form-page-2');
-  if(p1) p1.style.display='block';
-  if(p2) p2.style.display='none';
-  const sd2=document.getElementById('step-dot-2'); if(sd2){sd2.style.background='var(--border)';sd2.style.color='var(--muted)';}
-  const sl2=document.getElementById('step-lbl-2'); if(sl2) sl2.style.color='var(--light)';
-  const sline=document.getElementById('step-line'); if(sline) sline.style.width='0%';
+  // Clear all formData
+  for(const key in formData) delete formData[key];
+  // Clear uploaded files
+  for(const key in uploadedFiles) uploadedFiles[key]=[];
+  // Return to section 0 and re-render
+  currentSection=0;
+  renderSubmitForm();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1772,6 +1760,536 @@ function addContactField(){
   document.getElementById('nf-label').value=''; renderMasterCF(); buildFormContact();
 }
 
+
+// ════════════════════════════════════════════════════════════════
+// FORM ENGINE — SECTION-BASED DYNAMIC FORM
+// ════════════════════════════════════════════════════════════════
+
+let currentSection = 0;  // which section is active (0-indexed)
+const formData = {};      // stores all entered data keyed by field id
+
+const FIELD_TYPES = {
+  cluster_select: 'Cluster Select',
+  school_select:  'School Select',
+  text:           'Text',
+  tel:            'Phone',
+  email:          'Email',
+  number:         'Number',
+  url:            'URL / Link',
+  date:           'Date',
+  textarea:       'Long Text',
+  yesno:          'Yes / No',
+  select:         'Dropdown (Custom)',
+  file:           'File Upload',
+  datagrid:       'Data Grid (Rows × Columns)',
+};
+
+function uid(){ return 'id_'+ Math.random().toString(36).substr(2,9); }
+
+// ── RENDER SUBMIT FORM ───────────────────────────────────────────
+function renderSubmitForm(){
+  const sections = cfg.formSections || [];
+  if(!sections.length){ document.getElementById('form-sections-wrap').innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0">No sections configured. Go to Admin → Master Sheet → Form Builder.</div>'; return; }
+
+  // Step indicator
+  const stepsWrap = document.getElementById('form-steps');
+  if(sections.length > 1){
+    let stepsHtml = '<div style="display:flex;align-items:center;overflow-x:auto;padding-bottom:4px">';
+    sections.forEach((sec,i)=>{
+      const active = i === currentSection;
+      const done   = i < currentSection;
+      const dotBg  = done ? 'var(--green)' : active ? 'var(--navy)' : 'var(--border)';
+      const dotColor = (done||active) ? '#fff' : 'var(--muted)';
+      const lblColor = active ? 'var(--navy)' : done ? 'var(--green)' : 'var(--light)';
+      stepsHtml += `<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <div style="width:26px;height:26px;border-radius:50%;background:${dotBg};color:${dotColor};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;transition:all .3s">
+          ${done ? '✓' : i+1}
+        </div>
+        <div style="font-size:11px;font-weight:500;color:${lblColor};transition:color .3s;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis" title="${esc(sec.title)}">${esc(sec.title)}</div>
+      </div>`;
+      if(i < sections.length-1){
+        const lineColor = i < currentSection ? 'var(--green)' : 'var(--border)';
+        stepsHtml += `<div style="flex:1;min-width:20px;height:2px;background:${lineColor};margin:0 6px;border-radius:1px;transition:background .4s"></div>`;
+      }
+    });
+    stepsHtml += '</div>';
+    stepsWrap.innerHTML = stepsHtml;
+  } else {
+    stepsWrap.innerHTML = '';
+  }
+
+  // Render current section
+  const sec = sections[currentSection];
+  let html = '';
+  if(sec.title)       html += `<div style="font-size:16px;font-weight:600;margin-bottom:4px">${esc(sec.title)}</div>`;
+  if(sec.description) html += `<div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5">${esc(sec.description)}</div>`;
+
+  sec.fields.forEach(field => {
+    html += renderFormField(field);
+  });
+
+  document.getElementById('form-sections-wrap').innerHTML = html;
+
+  // Bind cluster select → school select
+  const csel = document.getElementById('fld_cluster');
+  if(csel){ csel.addEventListener('change', ()=>{ populateSchoolsForField(); }); }
+
+  // Restore saved values
+  sec.fields.forEach(field => {
+    if(formData[field.id] !== undefined){
+      const el = document.getElementById(field.id);
+      if(el) el.value = formData[field.id];
+      if(field.type === 'school_select' && formData['fld_cluster']){
+        populateSchoolsForField();
+        setTimeout(()=>{ const el2=document.getElementById(field.id); if(el2) el2.value=formData[field.id]||''; },50);
+      }
+    }
+  });
+
+  // Nav buttons
+  const btnBack   = document.getElementById('form-btn-back');
+  const btnNext   = document.getElementById('form-btn-next');
+  const btnSubmit = document.getElementById('form-btn-submit');
+  const btnClear  = document.getElementById('form-btn-clear');
+  const isFirst   = currentSection === 0;
+  const isLast    = currentSection === sections.length - 1;
+  if(btnBack)   { btnBack.style.display   = isFirst ? 'none' : 'flex'; }
+  if(btnNext)   { btnNext.style.display   = isLast  ? 'none' : 'flex'; }
+  if(btnSubmit) { btnSubmit.style.display = isLast  ? 'flex' : 'none'; }
+  if(btnClear)  { btnClear.style.display  = isFirst ? 'block' : 'none'; }
+
+  // Update submit-btn id for submitForm()
+  const oldSubmit = document.getElementById('submit-btn');
+  if(btnSubmit) btnSubmit.id = 'submit-btn';
+  if(oldSubmit && oldSubmit !== btnSubmit) oldSubmit.id = '';
+}
+
+function renderFormField(field){
+  const req = field.required ? '<span style="color:var(--red)">*</span>' : '';
+  let inp = '';
+
+  if(field.type === 'cluster_select'){
+    const disabled = cfg.disabledCategories||[];
+    let opts = '<option value="">— Select Cluster —</option>';
+    cfg.clusters.forEach(c=>{ opts += `<option value="${esc(c)}">${esc(c)}</option>`; });
+    inp = `<select id="${field.id}" onchange="populateSchoolsForField()" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none">${opts}</select>`;
+  }
+  else if(field.type === 'school_select'){
+    inp = `<select id="${field.id}" onchange="onSchoolSelectForField('${field.id}')" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none"><option value="">— Select School —</option></select>
+    <div id="school-cat-display-${field.id}" style="display:none;margin-top:5px;font-size:12px;color:var(--muted)">Category: <span id="cat-badge-${field.id}" class="cat-badge"></span></div>`;
+  }
+  else if(field.type === 'textarea'){
+    inp = `<textarea id="${field.id}" rows="3" placeholder="${esc(field.label)}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>`;
+  }
+  else if(field.type === 'yesno'){
+    inp = `<select id="${field.id}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none"><option value="">— Select —</option><option value="Yes">Yes</option><option value="No">No</option></select>`;
+  }
+  else if(field.type === 'select' && field.options){
+    const opts = (field.options||[]).map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('');
+    inp = `<select id="${field.id}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none"><option value="">— Select —</option>${opts}</select>`;
+  }
+  else if(field.type === 'file'){
+    const accept = fileAccept(field);
+    const maxFiles = field.maxFiles||1;
+    const maxMB = field.maxSizeMB||10;
+    inp = `<div style="border:2px dashed var(--border);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('${field.id}_input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--sky)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleFileDrop(event,'${field.id}',${maxFiles},${maxMB},'${accept}')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" style="margin-bottom:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div style="font-size:13px;color:var(--muted)">Click to browse or drag &amp; drop</div>
+      <div style="font-size:11px;color:var(--light);margin-top:3px">Max ${maxFiles} file${maxFiles>1?'s':''} · ${maxMB}MB each</div>
+    </div>
+    <input type="file" id="${field.id}_input" accept="${accept}" ${maxFiles>1?'multiple':''} style="display:none" onchange="handleFileSelect(this,'${field.id}',${maxFiles},${maxMB})">
+    <div id="cf_${field.id}_preview" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div id="cf_${field.id}_progress" style="display:none;margin-top:6px;font-size:12px;color:var(--blue)"></div>`;
+  }
+  else if(field.type === 'datagrid'){
+    const cols = (field.columns||cfg.activities).map(a=>toObj(a));
+    const rows = (field.rows||cfg.rowLabels).map(r=>toObj(r));
+    let tbl = `<div class="dgrid-wrap"><table class="dgrid"><thead><tr><th class="col-head" style="text-align:left;min-width:100px">Row / Activity</th>`;
+    cols.forEach(c=>tbl+=`<th class="col-head" style="min-width:80px">${esc(c.label)}<div style="font-size:9px;opacity:.7">${TYPE_LABELS[c.type]||c.type}</div></th>`);
+    tbl+=`</tr></thead><tbody>`;
+    rows.forEach((row,ri)=>{
+      tbl+=`<tr><td class="row-lbl">${esc(row.label)}<div style="font-size:9px;color:var(--light)">${TYPE_LABELS[row.type]||row.type}</div></td>`;
+      cols.forEach((_,ci)=>{
+        const cellId=`${field.id}_r${ri}_c${ci}`;
+        const cellType=row.type;
+        if(cellType==='yesno'){
+          tbl+=`<td><select id="${cellId}" style="width:100%;padding:6px 4px;border:none;font-size:12px;font-family:inherit;background:transparent;outline:none"><option value="">—</option><option>Yes</option><option>No</option></select></td>`;
+        } else if(cellType==='url'){
+          tbl+=`<td><input type="url" id="${cellId}" placeholder="https://..." style="width:100%;padding:7px 8px;border:none;font-size:11px;font-family:inherit;background:transparent;outline:none;color:var(--blue)"></td>`;
+        } else if(cellType==='date'){
+          tbl+=`<td><input type="date" id="${cellId}" style="width:100%;padding:6px 4px;border:none;font-size:11px;font-family:inherit;background:transparent;outline:none"></td>`;
+        } else if(cellType==='number'){
+          tbl+=`<td><input type="number" min="0" id="${cellId}" placeholder="0" style="width:100%;padding:7px 8px;border:none;font-size:12px;font-family:inherit;background:transparent;outline:none"></td>`;
+        } else {
+          tbl+=`<td><input type="text" id="${cellId}" placeholder="—" style="width:100%;padding:7px 8px;border:none;font-size:12px;font-family:inherit;background:transparent;outline:none"></td>`;
+        }
+      });
+      tbl+=`</tr>`;
+    });
+    tbl+=`</tbody></table></div>`;
+    inp = tbl;
+  }
+  else {
+    inp = `<input id="${field.id}" type="${field.type}" placeholder="${esc(field.label)}" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none">`;
+  }
+
+  if(field.type === 'datagrid'){
+    return `<div style="margin-bottom:16px">
+      ${field.label?`<div style="font-size:13px;font-weight:500;margin-bottom:6px">${esc(field.label)} ${req}</div>`:''}
+      ${inp}
+    </div>`;
+  }
+  if(field.type === 'file') {
+    return `<div class="fgroup" style="margin-bottom:14px"><label>${esc(field.label)} ${req}</label>${inp}</div>`;
+  }
+  return `<div class="fgroup" style="margin-bottom:14px">
+    <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px">${esc(field.label)} ${req}</label>
+    ${inp}
+  </div>`;
+}
+
+function populateSchoolsForField(){
+  // Find cluster select in current section
+  const csel = document.getElementById('fld_cluster');
+  const cluster = csel ? csel.value : '';
+  // Find school select in current section
+  const sec = cfg.formSections[currentSection];
+  if(!sec) return;
+  const schoolField = sec.fields.find(f=>f.type==='school_select');
+  if(!schoolField) return;
+  const ssel = document.getElementById(schoolField.id);
+  if(!ssel) return;
+  ssel.innerHTML = '<option value="">— Select School —</option>';
+  if(!cluster||!cfg.schools[cluster]) return;
+  const disabled = cfg.disabledCategories||[];
+  const byCat = {};
+  cfg.schools[cluster].forEach(s=>{
+    const sch = typeof s==='object'?s:{name:s,category:''};
+    if(disabled.includes(sch.category)) return;
+    if(!byCat[sch.category]) byCat[sch.category]=[];
+    byCat[sch.category].push(sch);
+  });
+  ['Sr. Sec.','High','Middle','Primary',''].forEach(cat=>{
+    if(!byCat[cat]||!byCat[cat].length) return;
+    const grp = document.createElement('optgroup');
+    grp.label = '── '+(cat||'Other')+' ──';
+    byCat[cat].forEach(sch=>{ const o=document.createElement('option');o.value=sch.name;o.textContent=sch.name;grp.appendChild(o); });
+    ssel.appendChild(grp);
+  });
+}
+
+function onSchoolSelectForField(fieldId){
+  // Show category badge
+  const ssel = document.getElementById(fieldId);
+  if(!ssel) return;
+  const school = ssel.value;
+  const disp = document.getElementById('school-cat-display-'+fieldId);
+  const badge = document.getElementById('cat-badge-'+fieldId);
+  if(!disp||!badge) return;
+  // Find cluster
+  const csel = document.getElementById('fld_cluster');
+  const cluster = csel?csel.value:'';
+  if(cluster && school && cfg.schools[cluster]){
+    const found = cfg.schools[cluster].find(s=>(typeof s==='object'?s.name:s)===school);
+    if(found && found.category){
+      const st = CAT_STYLE[found.category]||{bg:'#f1f5f9',color:'#64748b'};
+      badge.textContent = found.category;
+      badge.style.background = st.bg; badge.style.color = st.color;
+      disp.style.display = 'block'; return;
+    }
+  }
+  disp.style.display = 'none';
+}
+
+// ── FORM NAVIGATION ──────────────────────────────────────────────
+function formNavNext(){
+  // Validate current section
+  const sec = cfg.formSections[currentSection];
+  if(!sec) return;
+  const errEl = document.getElementById('form-error');
+  if(errEl){ errEl.style.display='none'; }
+
+  for(const field of sec.fields){
+    if(field.type === 'datagrid') continue;
+    if(field.type === 'file'){
+      if(field.required && !(uploadedFiles[field.id]||[]).length){
+        if(errEl){ errEl.textContent=`Please upload a file for "${field.label}".`; errEl.style.display='block'; } return;
+      }
+      continue;
+    }
+    const el = document.getElementById(field.id);
+    if(!el) continue;
+    const val = el.value.trim();
+    // Save to formData
+    formData[field.id] = val;
+    if(field.required && !val){
+      if(errEl){ errEl.textContent=`"${field.label}" is required.`; errEl.style.display='block'; } return;
+    }
+    if(field.type==='tel' && val && !/^[0-9]{7,15}$/.test(val.replace(/\s/g,''))){
+      if(errEl){ errEl.textContent='Please enter a valid phone number.'; errEl.style.display='block'; } return;
+    }
+  }
+  currentSection++;
+  renderSubmitForm();
+  document.getElementById('tab-submit').scrollIntoView({behavior:'smooth'});
+}
+
+function formNavBack(){
+  if(currentSection > 0){ currentSection--; renderSubmitForm(); }
+  document.getElementById('tab-submit').scrollIntoView({behavior:'smooth'});
+}
+
+// ── COLLECT ALL FORM DATA ────────────────────────────────────────
+function collectFormData(){
+  const sections = cfg.formSections || [];
+  const fields_flat = {};
+  const gridData = {};
+  let school='', cluster='';
+
+  sections.forEach(sec=>{
+    sec.fields.forEach(field=>{
+      if(field.type==='cluster_select'){ const el=document.getElementById(field.id); if(el) cluster=el.value; formData[field.id]=cluster; }
+      else if(field.type==='school_select'){ const el=document.getElementById(field.id); if(el) school=el.value; formData[field.id]=school; }
+      else if(field.type==='datagrid'){
+        const cols=(field.columns||cfg.activities).map(a=>toObj(a));
+        const rows=(field.rows||cfg.rowLabels).map(r=>toObj(r));
+        const gd={};
+        cols.forEach((col,ci)=>{
+          gd[col.label]={};
+          rows.forEach((row,ri)=>{
+            const el=document.getElementById(`${field.id}_r${ri}_c${ci}`);
+            gd[col.label][row.label]=el?el.value.trim():'';
+          });
+        });
+        Object.assign(gridData,gd);
+      }
+      else if(field.type!=='file'){
+        const el=document.getElementById(field.id);
+        if(el) fields_flat[field.label]=el.value.trim();
+      }
+    });
+  });
+  return {school, cluster, fields: fields_flat, gridData};
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FORM BUILDER — MASTER SHEET EDITOR
+// ═══════════════════════════════════════════════════════════════════
+function renderFormBuilder(){
+  const list = document.getElementById('fb-sections-list'); if(!list) return;
+  if(!cfg.formSections) cfg.formSections=[];
+  list.innerHTML='';
+  cfg.formSections.forEach((sec,si)=>{
+    const card=document.createElement('div');
+    card.style.cssText='border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--white)';
+    card.innerHTML=`
+      <!-- Section header -->
+      <div style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;gap:10px">
+        <div style="color:#94a3b8;font-size:11px;font-weight:600;flex-shrink:0">Section ${si+1}</div>
+        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input value="${esc(sec.title||'')}" placeholder="Section Title" onchange="cfg.formSections[${si}].title=this.value"
+            style="padding:6px 10px;border-radius:6px;border:1px solid #334;background:rgba(255,255,255,0.1);color:#fff;font-size:13px;font-family:inherit;outline:none;width:100%">
+          <input value="${esc(sec.description||'')}" placeholder="Section Description (optional)" onchange="cfg.formSections[${si}].description=this.value"
+            style="padding:6px 10px;border-radius:6px;border:1px solid #334;background:rgba(255,255,255,0.1);color:#fff;font-size:13px;font-family:inherit;outline:none;width:100%">
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          ${si>0?`<button onclick="fbMoveSection(${si},-1)" title="Move Up" style="width:26px;height:26px;border:1px solid #445;border-radius:4px;background:transparent;color:#94a3b8;cursor:pointer;font-size:13px">↑</button>`:''}
+          ${si<cfg.formSections.length-1?`<button onclick="fbMoveSection(${si},1)" title="Move Down" style="width:26px;height:26px;border:1px solid #445;border-radius:4px;background:transparent;color:#94a3b8;cursor:pointer;font-size:13px">↓</button>`:''}
+          <button onclick="fbRemoveSection(${si})" title="Delete Section" style="width:26px;height:26px;border:1px solid #c00;border-radius:4px;background:rgba(220,38,38,0.2);color:#fca5a5;cursor:pointer;font-size:14px">×</button>
+        </div>
+      </div>
+      <!-- Fields list -->
+      <div id="fb-fields-${si}" style="padding:0"></div>
+      <!-- Add field row -->
+      <div style="padding:10px 14px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input id="fb-new-label-${si}" placeholder="Field label..." style="flex:1;min-width:160px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:inherit;outline:none">
+        <select id="fb-new-type-${si}" style="padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:inherit;outline:none">
+          ${Object.entries(FIELD_TYPES).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}
+        </select>
+        <button onclick="fbAddField(${si})" style="padding:7px 14px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap">+ Add Field</button>
+      </div>`;
+    list.appendChild(card);
+    renderFbFields(si);
+  });
+}
+
+function renderFbFields(si){
+  const wrap=document.getElementById('fb-fields-'+si); if(!wrap) return;
+  const sec=cfg.formSections[si];
+  wrap.innerHTML='';
+  if(!sec.fields.length){
+    wrap.innerHTML='<div style="padding:12px 16px;font-size:12px;color:var(--light);font-style:italic">No fields yet. Add a field below.</div>';
+    return;
+  }
+  sec.fields.forEach((field,fi)=>{
+    const isGrid = field.type==='datagrid';
+    const div=document.createElement('div');
+    div.style.cssText='border-bottom:1px solid var(--border);padding:10px 14px';
+    let typeSpecific='';
+    if(isGrid){
+      typeSpecific=`<div style="margin-top:8px;padding:10px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px">Grid Columns (Activities)</div>
+        <div id="fb-grid-cols-${si}-${fi}" style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px"></div>
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <input id="fb-new-col-${si}-${fi}" placeholder="New column..." style="flex:1;padding:5px 9px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;outline:none">
+          <select id="fb-new-col-type-${si}-${fi}" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;outline:none">
+            <option value="number">Number</option><option value="text">Text</option><option value="url">Link</option><option value="yesno">Yes/No</option><option value="date">Date</option>
+          </select>
+          <button onclick="fbAddGridCol(${si},${fi})" style="padding:5px 10px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">+ Col</button>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px">Grid Rows</div>
+        <div id="fb-grid-rows-${si}-${fi}" style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px"></div>
+        <div style="display:flex;gap:6px">
+          <input id="fb-new-row-${si}-${fi}" placeholder="New row..." style="flex:1;padding:5px 9px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;outline:none">
+          <select id="fb-new-row-type-${si}-${fi}" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:inherit;outline:none">
+            <option value="number">Number</option><option value="text">Text</option><option value="url">Link</option><option value="yesno">Yes/No</option><option value="date">Date</option>
+          </select>
+          <button onclick="fbAddGridRow(${si},${fi})" style="padding:5px 10px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">+ Row</button>
+        </div>
+      </div>`;
+    }
+    if(field.type==='select'){
+      typeSpecific+=`<div style="margin-top:8px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Dropdown Options (comma separated)</div>
+        <input value="${esc((field.options||[]).join(', '))}" onchange="cfg.formSections[${si}].fields[${fi}].options=this.value.split(',').map(s=>s.trim()).filter(Boolean)" 
+          placeholder="Option 1, Option 2, Option 3" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+      </div>`;
+    }
+    if(field.type==='file'){
+      typeSpecific+=`<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Max Files</div>
+          <input type="number" min="1" max="10" value="${field.maxFiles||1}" onchange="cfg.formSections[${si}].fields[${fi}].maxFiles=parseInt(this.value)||1"
+            style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none"></div>
+        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">Max MB</div>
+          <input type="number" min="1" max="100" value="${field.maxSizeMB||10}" onchange="cfg.formSections[${si}].fields[${fi}].maxSizeMB=parseInt(this.value)||10"
+            style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none"></div>
+        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">File Types</div>
+          <select onchange="cfg.formSections[${si}].fields[${fi}].allowedTypes=this.value"
+            style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none">
+            <option value="any"${(field.allowedTypes||'any')==='any'?' selected':''}>Any</option>
+            <option value="image"${field.allowedTypes==='image'?' selected':''}>Images</option>
+            <option value="pdf"${field.allowedTypes==='pdf'?' selected':''}>PDF</option>
+            <option value="doc"${field.allowedTypes==='doc'?' selected':''}>Word/Excel/PPT</option>
+            <option value="image,pdf"${field.allowedTypes==='image,pdf'?' selected':''}>Images+PDF</option>
+          </select></div>
+      </div>`;
+    }
+    div.innerHTML=`<div style="display:flex;align-items:center;gap:8px">
+        <div style="width:22px;height:22px;background:var(--surface);border:1px solid var(--border);border-radius:4px;font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0">${fi+1}</div>
+        <input value="${esc(field.label)}" onchange="cfg.formSections[${si}].fields[${fi}].label=this.value;renderSubmitForm()"
+          style="flex:1;border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none">
+        <select onchange="cfg.formSections[${si}].fields[${fi}].type=this.value;renderFbFields(${si});renderSubmitForm()"
+          style="width:140px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;outline:none;flex-shrink:0">
+          ${Object.entries(FIELD_TYPES).map(([v,l])=>`<option value="${v}"${field.type===v?' selected':''}>${l}</option>`).join('')}
+        </select>
+        <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0">
+          <input type="checkbox" ${field.required?'checked':''} onchange="cfg.formSections[${si}].fields[${fi}].required=this.checked"> Req.
+        </label>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          ${fi>0?`<button onclick="fbMoveField(${si},${fi},-1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;font-size:11px">↑</button>`:''}
+          ${fi<sec.fields.length-1?`<button onclick="fbMoveField(${si},${fi},1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;font-size:11px">↓</button>`:''}
+          <button onclick="fbRemoveField(${si},${fi})" style="width:22px;height:22px;border:1px solid #fca5a5;border-radius:4px;background:var(--red-bg);color:var(--red);cursor:pointer;font-size:14px;line-height:1">×</button>
+        </div>
+      </div>
+      ${typeSpecific}`;
+    wrap.appendChild(div);
+    if(isGrid){
+      renderFbGridCols(si,fi);
+      renderFbGridRows(si,fi);
+    }
+  });
+}
+
+function renderFbGridCols(si,fi){
+  const wrap=document.getElementById(`fb-grid-cols-${si}-${fi}`); if(!wrap) return;
+  const field=cfg.formSections[si].fields[fi];
+  const cols=(field.columns||[]).map(a=>toObj(a));
+  wrap.innerHTML=cols.map((col,ci)=>`
+    <div style="display:flex;align-items:center;gap:6px">
+      <input value="${esc(col.label)}" onchange="cfg.formSections[${si}].fields[${fi}].columns[${ci}]=Object.assign(toObj(cfg.formSections[${si}].fields[${fi}].columns[${ci}]),{label:this.value})"
+        style="flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+      <select onchange="cfg.formSections[${si}].fields[${fi}].columns[${ci}]=Object.assign(toObj(cfg.formSections[${si}].fields[${fi}].columns[${ci}]),{type:this.value})"
+        style="width:90px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+        ${['number','text','url','yesno','date'].map(t=>`<option value="${t}"${col.type===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <button onclick="cfg.formSections[${si}].fields[${fi}].columns.splice(${ci},1);renderFbFields(${si})"
+        style="width:20px;height:20px;border:1px solid #fca5a5;border-radius:4px;background:var(--red-bg);color:var(--red);cursor:pointer;font-size:13px;line-height:1">×</button>
+    </div>`).join('');
+}
+function renderFbGridRows(si,fi){
+  const wrap=document.getElementById(`fb-grid-rows-${si}-${fi}`); if(!wrap) return;
+  const field=cfg.formSections[si].fields[fi];
+  const rows=(field.rows||[]).map(a=>toObj(a));
+  wrap.innerHTML=rows.map((row,ri)=>`
+    <div style="display:flex;align-items:center;gap:6px">
+      <input value="${esc(row.label)}" onchange="cfg.formSections[${si}].fields[${fi}].rows[${ri}]=Object.assign(toObj(cfg.formSections[${si}].fields[${fi}].rows[${ri}]),{label:this.value})"
+        style="flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+      <select onchange="cfg.formSections[${si}].fields[${fi}].rows[${ri}]=Object.assign(toObj(cfg.formSections[${si}].fields[${fi}].rows[${ri}]),{type:this.value})"
+        style="width:90px;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+        ${['number','text','url','yesno','date'].map(t=>`<option value="${t}"${row.type===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <button onclick="cfg.formSections[${si}].fields[${fi}].rows.splice(${ri},1);renderFbFields(${si})"
+        style="width:20px;height:20px;border:1px solid #fca5a5;border-radius:4px;background:var(--red-bg);color:var(--red);cursor:pointer;font-size:13px;line-height:1">×</button>
+    </div>`).join('');
+}
+function fbAddGridCol(si,fi){
+  const label=document.getElementById(`fb-new-col-${si}-${fi}`).value.trim(); if(!label) return;
+  const type=document.getElementById(`fb-new-col-type-${si}-${fi}`).value;
+  if(!cfg.formSections[si].fields[fi].columns) cfg.formSections[si].fields[fi].columns=[];
+  cfg.formSections[si].fields[fi].columns.push({label,type});
+  document.getElementById(`fb-new-col-${si}-${fi}`).value='';
+  renderFbGridCols(si,fi);
+}
+function fbAddGridRow(si,fi){
+  const label=document.getElementById(`fb-new-row-${si}-${fi}`).value.trim(); if(!label) return;
+  const type=document.getElementById(`fb-new-row-type-${si}-${fi}`).value;
+  if(!cfg.formSections[si].fields[fi].rows) cfg.formSections[si].fields[fi].rows=[];
+  cfg.formSections[si].fields[fi].rows.push({label,type});
+  document.getElementById(`fb-new-row-${si}-${fi}`).value='';
+  renderFbGridRows(si,fi);
+}
+
+function fbAddSection(){
+  if(!cfg.formSections) cfg.formSections=[];
+  cfg.formSections.push({id:uid(),title:'New Section',description:'',fields:[]});
+  renderFormBuilder();
+}
+function fbRemoveSection(si){
+  if(!confirm(`Delete Section ${si+1}?`)) return;
+  cfg.formSections.splice(si,1);
+  renderFormBuilder();
+}
+function fbMoveSection(si,dir){
+  const arr=cfg.formSections, j=si+dir;
+  if(j<0||j>=arr.length) return;
+  [arr[si],arr[j]]=[arr[j],arr[si]];
+  renderFormBuilder();
+}
+function fbAddField(si){
+  const label=document.getElementById('fb-new-label-'+si).value.trim(); if(!label) return;
+  const type=document.getElementById('fb-new-type-'+si).value;
+  const field={id:uid(),label,type,required:false};
+  if(type==='select') field.options=[];
+  if(type==='file'){field.maxFiles=1;field.maxSizeMB=10;field.allowedTypes='any';}
+  if(type==='datagrid'){field.columns=[];field.rows=[];}
+  cfg.formSections[si].fields.push(field);
+  document.getElementById('fb-new-label-'+si).value='';
+  renderFbFields(si);
+  renderSubmitForm();
+}
+function fbRemoveField(si,fi){
+  cfg.formSections[si].fields.splice(fi,1);
+  renderFbFields(si);
+  renderSubmitForm();
+}
+function fbMoveField(si,fi,dir){
+  const arr=cfg.formSections[si].fields, j=fi+dir;
+  if(j<0||j>=arr.length) return;
+  [arr[fi],arr[j]]=[arr[j],arr[fi]];
+  renderFbFields(si);
+  renderSubmitForm();
+}
+
 // ════════════════════════════════════════════════════════════════
 // MASTER NAV
 // ════════════════════════════════════════════════════════════════
@@ -1779,6 +2297,7 @@ function showMS(id,el){
   document.querySelectorAll('.mp-section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.mnav-item').forEach(s=>s.classList.remove('active'));
   document.getElementById('ms-'+id).classList.add('active'); el.classList.add('active');
+  if(id==='formbuilder') renderFormBuilder();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1802,7 +2321,8 @@ function toast(msg,t){
 async function init(){
   applyAll();
   if(cfg.clusters.length>0) selClusterEditor=cfg.clusters[0];
-  // Start on Submit Report tab
+  // Start on Submit Report tab — renders form from sections
+  currentSection=0;
   showTab('submit');
   if(cfg.endpoint){
     // Load remote config silently in background
